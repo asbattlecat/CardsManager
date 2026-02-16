@@ -12,7 +12,7 @@ public interface CardService {
   void block(UUID cardId);
   void activate(UUID cardId, UUID userId);
   void delete(UUID cardId);
-  List<UUID> getAllCards(UUID userId);
+  List<UUID> getAllCards();
   List<UUID> getUserCardsId(UUID userId);
 
 

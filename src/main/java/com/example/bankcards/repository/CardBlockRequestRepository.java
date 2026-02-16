@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;
 
-public interface CardBlockRequestsRepository extends CrudRepository<CardBlockRequestEntity, UUID> {
+public interface CardBlockRequestRepository extends CrudRepository<CardBlockRequestEntity, UUID> {
 }

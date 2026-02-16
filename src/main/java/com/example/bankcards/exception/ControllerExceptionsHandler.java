@@ -12,12 +12,17 @@ public class ControllerExceptionsHandler {
   }
 
   @ExceptionHandler(InvalidCredentialsException.class)
-  public ResponseEntity<String> handleInvalidLogin(InvalidCredentialsException e) {
+  public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialsException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<String> handleUserNotFound(NotFoundException e) {
+  public ResponseEntity<String> handleNotFound(NotFoundException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  @ExceptionHandler(IllegalStateException.class)
+  public ResponseEntity<String> handleIllegalState(IllegalStateException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 }
