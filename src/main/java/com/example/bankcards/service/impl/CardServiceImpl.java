@@ -4,8 +4,8 @@ import com.example.bankcards.dto.CardResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.UserEntity;
-import com.example.bankcards.exception.CardNumberIsBusyException;
-import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.exception.AlreadyExistsException;
+import com.example.bankcards.exception.NotFoundException;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
@@ -34,12 +34,12 @@ public class CardServiceImpl implements CardService {
   public CardResponse create(CreateCardRequest request, UUID userId) {
     Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
     if (userEntityOptional.isEmpty()) {
-      throw new UserNotFoundException("There is no user with such Id!");
+      throw new NotFoundException("There is no user with such Id!");
     }
 
     String encryptedNumber = encryptionService.encrypt(request.cardNumber());
     if (cardRepository.existsByEncryptedNumber(encryptedNumber)) {
-      throw new CardNumberIsBusyException("Card with such number already exists!");
+      throw new AlreadyExistsException("Card with such number already exists!");
     }
 
     int cardNumberLength = request.cardNumber().length();
@@ -55,18 +55,22 @@ public class CardServiceImpl implements CardService {
   }
 
   @Override
-  public void delete(UUID cardId, UUID userId) {
-
-  }
-
-  @Override
-  public void block(UUID cardId, UUID userId) {
+  public void block(UUID cardId) {
 
   }
 
   @Override
   public void activate(UUID cardId, UUID userId) {
 
+  }
+
+  @Override
+  public void delete(UUID cardId) {
+    if (!cardRepository.existsById(cardId)) {
+      throw new NotFoundException("Card with such id does not exist!");
+    }
+
+    cardRepository.deleteById(cardId);
   }
 
   @Override

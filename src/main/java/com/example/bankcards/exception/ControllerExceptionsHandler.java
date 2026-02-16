@@ -6,23 +6,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerExceptionsHandler {
-  @ExceptionHandler(UserAlreadyExists.class)
-  public ResponseEntity<String> handleUserAlreadyExists(UserAlreadyExists e) {
+  @ExceptionHandler(AlreadyExistsException.class)
+  public ResponseEntity<String> handleUserAlreadyExists(AlreadyExistsException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
-  @ExceptionHandler(InvalidLoginException.class)
-  public ResponseEntity<String> handleInvalidLogin(InvalidLoginException e) {
+  @ExceptionHandler(InvalidCredentialsException.class)
+  public ResponseEntity<String> handleInvalidLogin(InvalidCredentialsException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 
-  @ExceptionHandler(InvalidPasswordException.class)
-  public ResponseEntity<String> handleInvalidPassword(InvalidPasswordException e) {
-    return ResponseEntity.badRequest().body(e.getMessage());
-  }
-
-  @ExceptionHandler(UserNotFoundException.class)
-  public ResponseEntity<String> handleUserNotFound(UserNotFoundException e) {
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<String> handleUserNotFound(NotFoundException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 }

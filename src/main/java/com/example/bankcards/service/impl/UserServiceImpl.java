@@ -4,9 +4,8 @@ import com.example.bankcards.dto.AuthResponse;
 import com.example.bankcards.dto.LoginRequest;
 import com.example.bankcards.dto.RegistrationRequest;
 import com.example.bankcards.entity.UserEntity;
-import com.example.bankcards.exception.InvalidLoginException;
-import com.example.bankcards.exception.InvalidPasswordException;
-import com.example.bankcards.exception.UserAlreadyExists;
+import com.example.bankcards.exception.InvalidCredentialsException;
+import com.example.bankcards.exception.AlreadyExistsException;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.interfaces.JwtProvider;
 import com.example.bankcards.service.interfaces.UserService;
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
   public void register(RegistrationRequest request) {
     // проверка на существование пользователя
     if (userRepository.existsByEmail(request.email())) {
-      throw new UserAlreadyExists("User with such email already exists!");
+      throw new AlreadyExistsException("User with such email already exists!");
     }
 
     String hash = passwordEncoder.encode(request.password());
@@ -45,13 +44,13 @@ public class UserServiceImpl implements UserService {
   public AuthResponse login(LoginRequest request) {
     Optional<UserEntity> userEntityOptional = userRepository.findByEmail(request.email());
     if (userEntityOptional.isEmpty()) {
-      throw new InvalidLoginException("There is no user with such email");
+      throw new InvalidCredentialsException("Invalid credentials");
     }
 
     UserEntity user = userEntityOptional.get();
 
     if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-      throw new InvalidPasswordException("Invalid password");
+      throw new InvalidCredentialsException("Invalid credentials");
     }
 
     String accessToken = jwtProvider.generateAccessToken(user);

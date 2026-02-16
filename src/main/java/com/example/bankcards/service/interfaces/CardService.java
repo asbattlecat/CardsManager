@@ -9,9 +9,9 @@ import java.util.UUID;
 public interface CardService {
   // операции со стороны администратора:
   CardResponse create(CreateCardRequest request, UUID userId);
-  void block(UUID cardId, UUID userId);
+  void block(UUID cardId);
   void activate(UUID cardId, UUID userId);
-  void delete(UUID cardId, UUID userId);
+  void delete(UUID cardId);
   List<UUID> getAllCards(UUID userId);
   List<UUID> getUserCardsId(UUID userId);
 
