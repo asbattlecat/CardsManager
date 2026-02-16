@@ -1,4 +1,22 @@
 package com.example.bankcards.service.interfaces;
 
+import com.example.bankcards.dto.CreateCardRequest;
+import com.example.bankcards.dto.CardResponse;
+
+import java.util.List;
+import java.util.UUID;
+
 public interface CardService {
+  // операции со стороны администратора:
+  CardResponse create(CreateCardRequest request, UUID userId);
+  void block(UUID cardId, UUID userId);
+  void activate(UUID cardId, UUID userId);
+  void delete(UUID cardId, UUID userId);
+  List<UUID> getAllCards(UUID userId);
+  List<UUID> getUserCardsId(UUID userId);
+
+
+  // операции со стороны пользователя:
+  CardResponse getCardInfo(UUID cardId);
+  void blockRequest(UUID cardId, UUID userId);
 }

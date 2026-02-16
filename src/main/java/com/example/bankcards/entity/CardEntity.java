@@ -16,31 +16,29 @@ import java.util.UUID;
 @Entity
 @Table(name = "cards")
 public class CardEntity {
+
   @Id
-  private UUID id;
+  private UUID id; // id карты
 
   @Column(nullable = false, unique = true)
-  private String encryptedNumber;
+  private String encryptedNumber; // зашифрованный номер
 
   @Column(nullable = false, length = 4)
-  private String lastFourDigits;
+  private String lastFourDigits; // последние четыре цифры карты
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  private UserEntity owner;
+  private UserEntity owner; // владелец
 
   @Column(nullable = false)
-  private BigDecimal balance;
-
-  @Column(nullable = false)
-  private LocalDate createdAt;
-
-  @Column(nullable = false)
-  private LocalDate expirationDate;
+  private LocalDate expirationDate; // дата истечения срока
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
-  private CardStatus status;
+  private CardStatus status; // статус карты
+
+  @Column(nullable = false)
+  private BigDecimal balance; // баланс
 
   public CardEntity(String encryptedNumber, String lastFourDigits, UserEntity owner) {
     id = UUID.randomUUID();
@@ -49,14 +47,13 @@ public class CardEntity {
     this.lastFourDigits = lastFourDigits;
     this.owner = owner;
 
-    balance = BigDecimal.ZERO;
-    createdAt = LocalDate.now();
-    expirationDate = createdAt.plusYears(5);
+    expirationDate = LocalDate.now().plusYears(5);
 
     status = CardStatus.ACTIVE;
+    balance = BigDecimal.ZERO;
   }
 
   public String getMaskedNumber() {
-    return "**** **** ****" + lastFourDigits;
+    return "**** **** **** " + lastFourDigits;
   }
 }

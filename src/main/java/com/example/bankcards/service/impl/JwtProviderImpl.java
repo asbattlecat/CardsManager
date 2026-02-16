@@ -76,7 +76,7 @@ public class JwtProviderImpl implements JwtProvider {
   }
 
   /**
-   * Метод проверят, что claims не были изменены, и возвращает сами claims
+   * Метод проверяет, что claims не были изменены, и возвращает сами claims
    * @param token access or refresh token
    * @return Claims из токена
    */

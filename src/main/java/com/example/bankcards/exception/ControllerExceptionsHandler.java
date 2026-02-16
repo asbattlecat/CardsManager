@@ -20,4 +20,9 @@ public class ControllerExceptionsHandler {
   public ResponseEntity<String> handleInvalidPassword(InvalidPasswordException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<String> handleUserNotFound(UserNotFoundException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
 }
