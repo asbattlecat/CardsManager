@@ -6,18 +6,18 @@ import com.example.bankcards.exception.InvalidIdException;
 import com.example.bankcards.service.interfaces.CardRepositoryService;
 import com.example.bankcards.service.interfaces.TransactionService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.util.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
   private final CardRepositoryService cardRepositoryService;
   private final UserRepositoryService userRepositoryService;
 
-  public TransactionServiceImpl(CardRepositoryService cardRepositoryService, UserRepositoryService userRepositoryService) {
+  public TransactionServiceImpl(
+      CardRepositoryService cardRepositoryService, UserRepositoryService userRepositoryService) {
     this.cardRepositoryService = cardRepositoryService;
     this.userRepositoryService = userRepositoryService;
   }
@@ -82,8 +82,8 @@ public class TransactionServiceImpl implements TransactionService {
   private void validateCardOwner(UUID userId, CardEntity fromEntity, CardEntity toEntity) {
     UUID fromOwnerId = fromEntity.getOwner().getId();
     UUID toOwnerId = toEntity.getOwner().getId();
-    // так как переводы разрешены только между картами одного пользователя, это проверка на то, что у указанных карт
-    // совпадают владельцы, и владелец равен userId (аргумент)
+    // так как переводы разрешены только между картами одного пользователя, это проверка на то, что
+    // у указанных карт совпадают владельцы, и владелец равен userId (аргумент)
 
     if (!fromOwnerId.equals(toOwnerId) || !fromOwnerId.equals(userId)) {
       throw new InvalidIdException("One or both cards do not belong to the specified user!");

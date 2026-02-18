@@ -6,10 +6,9 @@ import com.example.bankcards.exception.InvalidCredentialsException;
 import com.example.bankcards.exception.NotFoundException;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 public class UserRepositoryServiceImpl implements UserRepositoryService {
@@ -22,14 +21,14 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
   @Override
   @Transactional(readOnly = true)
   public UserEntity get(UUID userId) {
-    return userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundException("There is no user with such id!"));
+    return userRepository.findById(userId).orElseThrow(
+        () -> new NotFoundException("There is no user with such id!"));
   }
 
   @Override
   public UserEntity get(String email) {
-    return userRepository.findByEmail(email)
-            .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
+    return userRepository.findByEmail(email).orElseThrow(
+        () -> new InvalidCredentialsException("Invalid credentials"));
   }
 
   @Override
@@ -52,6 +51,4 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
       throw new AlreadyExistsException("User with such email already exists!");
     }
   }
-
-
 }

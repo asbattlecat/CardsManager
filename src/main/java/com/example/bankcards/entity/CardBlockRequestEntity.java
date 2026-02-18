@@ -1,24 +1,20 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "card_block_request")
 public class CardBlockRequestEntity {
-  @Id
-  private UUID id;
+  @Id private UUID id;
 
-  @Column(nullable = false, unique = true)
-  private UUID cardId;
+  @Column(nullable = false, unique = true) private UUID cardId;
 
-  @Column(nullable = false)
-  private UUID userId;
+  @Column(nullable = false) private UUID userId;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "request_status")

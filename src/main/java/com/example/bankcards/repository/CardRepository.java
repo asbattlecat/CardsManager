@@ -2,14 +2,13 @@ package com.example.bankcards.repository;
 
 import com.example.bankcards.entity.CardEntity;
 import jakarta.persistence.LockModeType;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface CardRepository extends CrudRepository<CardEntity, UUID> {
   boolean existsByEncryptedNumber(String encryptedNumber);

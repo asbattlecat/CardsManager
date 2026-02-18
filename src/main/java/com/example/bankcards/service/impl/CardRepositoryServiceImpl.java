@@ -5,10 +5,9 @@ import com.example.bankcards.exception.AlreadyExistsException;
 import com.example.bankcards.exception.NotFoundException;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.service.interfaces.CardRepositoryService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CardRepositoryServiceImpl implements CardRepositoryService {
@@ -20,13 +19,14 @@ public class CardRepositoryServiceImpl implements CardRepositoryService {
 
   @Override
   public CardEntity get(UUID cardId) {
-    return cardRepository.findById(cardId)
-            .orElseThrow(() -> new NotFoundException("There is no card with such id!"));
+    return cardRepository.findById(cardId).orElseThrow(
+        () -> new NotFoundException("There is no card with such id!"));
   }
 
   @Override
   public CardEntity getWithLock(UUID cardId) {
-    return null;
+    return cardRepository.findByIdWithPessimisticLock(cardId).orElseThrow(
+        () -> new NotFoundException("There is no card with such id!"));
   }
 
   @Override

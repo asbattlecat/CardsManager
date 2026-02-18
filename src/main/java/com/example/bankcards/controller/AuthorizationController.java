@@ -17,7 +17,7 @@ public class AuthorizationController {
     this.userService = userService;
   }
 
-  @GetMapping("/user/login")
+  @PostMapping("/user/login")
   public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
     JwtResponse response = userService.login(request);
     return ResponseEntity.ok(response);

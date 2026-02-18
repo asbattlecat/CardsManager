@@ -1,7 +1,6 @@
 package com.example.bankcards.service.interfaces;
 
 import com.example.bankcards.entity.CardEntity;
-
 import java.util.List;
 import java.util.UUID;
 

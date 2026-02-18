@@ -4,14 +4,13 @@ import com.example.bankcards.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
+import javax.crypto.SecretKey;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtProviderImpl implements JwtProvider {
@@ -30,13 +29,13 @@ public class JwtProviderImpl implements JwtProvider {
     Date expireAt = Date.from(now.plus(30, ChronoUnit.MINUTES));
 
     return Jwts.builder()
-            .subject(user.getId().toString())
-            .claim("roles", user.getRole().getAuthority())
-            .claim("type", "access")
-            .issuedAt(issuedAt)
-            .expiration(expireAt)
-            .signWith(key, Jwts.SIG.HS256)
-            .compact();
+        .subject(user.getId().toString())
+        .claim("roles", user.getRole().getAuthority())
+        .claim("type", "access")
+        .issuedAt(issuedAt)
+        .expiration(expireAt)
+        .signWith(key, Jwts.SIG.HS256)
+        .compact();
   }
 
   public String generateRefreshToken(UserEntity user) {
@@ -45,12 +44,12 @@ public class JwtProviderImpl implements JwtProvider {
     Date expireAt = Date.from(now.plus(1, ChronoUnit.DAYS));
 
     return Jwts.builder()
-            .subject(user.getId().toString())
-            .claim("type", "refresh")
-            .issuedAt(issuedAt)
-            .expiration(expireAt)
-            .signWith(key, Jwts.SIG.HS256)
-            .compact();
+        .subject(user.getId().toString())
+        .claim("type", "refresh")
+        .issuedAt(issuedAt)
+        .expiration(expireAt)
+        .signWith(key, Jwts.SIG.HS256)
+        .compact();
   }
 
   public boolean validateAccessToken(String accessToken) {
@@ -75,15 +74,11 @@ public class JwtProviderImpl implements JwtProvider {
 
   /**
    * Метод проверяет, что claims не были изменены, и возвращает сами claims
-   * @param token access or refresh token
+   * @param token access или refresh token
    * @return Claims из токена
    */
   public Claims getClaims(String token) {
-    return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+    return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
   }
 
   public UUID claimsToUUID(Claims claims) {

@@ -13,6 +13,4 @@ public class CardsController {
   public CardsController(CardService cardService) {
     this.cardService = cardService;
   }
-
-
 }

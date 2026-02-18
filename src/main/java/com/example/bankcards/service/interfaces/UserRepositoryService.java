@@ -1,7 +1,6 @@
 package com.example.bankcards.service.interfaces;
 
 import com.example.bankcards.entity.UserEntity;
-
 import java.util.UUID;
 
 public interface UserRepositoryService {

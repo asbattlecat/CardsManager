@@ -1,12 +1,11 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Класс, представляющий собой сущность карты
@@ -16,12 +15,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "cards")
 public class CardEntity {
+  @Id private UUID id; // id карты
 
-  @Id
-  private UUID id; // id карты
-
-  @Column(nullable = false, unique = true)
-  private String encryptedNumber; // зашифрованный номер
+  @Column(nullable = false, unique = true) private String encryptedNumber; // зашифрованный номер
 
   @Column(nullable = false, length = 4)
   private String lastFourDigits; // последние четыре цифры карты
@@ -30,18 +26,13 @@ public class CardEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity owner; // владелец
 
-  @Column(nullable = false)
-  private LocalDate expirationDate; // дата истечения срока
+  @Column(nullable = false) private LocalDate expirationDate; // дата истечения срока
 
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private CardStatus status; // статус карты
+  @Column(nullable = false) @Enumerated(EnumType.STRING) private CardStatus status; // статус карты
 
-  @Column(nullable = false)
-  private BigDecimal balance; // баланс
+  @Column(nullable = false) private BigDecimal balance; // баланс
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   public CardEntity(String encryptedNumber, String lastFourDigits, UserEntity owner) {
     id = UUID.randomUUID();

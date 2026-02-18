@@ -1,13 +1,13 @@
 package com.example.bankcards.service.impl;
 
-import com.example.bankcards.dto.JwtResponse;
 import com.example.bankcards.dto.JwtRequest;
+import com.example.bankcards.dto.JwtResponse;
 import com.example.bankcards.dto.SignupRequest;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.exception.InvalidCredentialsException;
 import com.example.bankcards.security.JwtProvider;
-import com.example.bankcards.service.interfaces.UserRepositoryService;
 import com.example.bankcards.service.interfaces.AuthService;
+import com.example.bankcards.service.interfaces.UserRepositoryService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,8 @@ public class AuthServiceImpl implements AuthService {
   private final JwtProvider jwtProvider;
   private final PasswordEncoder passwordEncoder;
 
-  public AuthServiceImpl(UserRepositoryService userRepositoryService, JwtProvider jwtProvider, PasswordEncoder passwordEncoder) {
+  public AuthServiceImpl(UserRepositoryService userRepositoryService, JwtProvider jwtProvider,
+      PasswordEncoder passwordEncoder) {
     this.userRepositoryService = userRepositoryService;
     this.jwtProvider = jwtProvider;
     this.passwordEncoder = passwordEncoder;

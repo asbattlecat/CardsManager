@@ -6,18 +6,17 @@ import com.example.bankcards.entity.CardBlockRequestEntity;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.repository.CardBlockRequestRepository;
+import com.example.bankcards.security.EncryptionService;
 import com.example.bankcards.service.interfaces.CardRepositoryService;
+import com.example.bankcards.service.interfaces.CardService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
 import com.example.bankcards.util.CardCheckerUtil;
 import com.example.bankcards.util.CardMapper;
-import com.example.bankcards.repository.CardBlockRequestRepository;
-import com.example.bankcards.security.EncryptionService;
-import com.example.bankcards.service.interfaces.CardService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CardServiceImpl implements CardService {
@@ -26,8 +25,9 @@ public class CardServiceImpl implements CardService {
   private final EncryptionService encryptionService;
   private final CardBlockRequestRepository blockRequestRepository;
 
-  public CardServiceImpl(CardRepositoryService cardRepositoryService, UserRepositoryService userRepositoryService,
-                         EncryptionService encryptionService, CardBlockRequestRepository blockRequestRepository) {
+  public CardServiceImpl(CardRepositoryService cardRepositoryService,
+      UserRepositoryService userRepositoryService, EncryptionService encryptionService,
+      CardBlockRequestRepository blockRequestRepository) {
     this.cardRepositoryService = cardRepositoryService;
     this.userRepositoryService = userRepositoryService;
     this.encryptionService = encryptionService;
@@ -44,7 +44,6 @@ public class CardServiceImpl implements CardService {
 
     int cardNumberLength = request.cardNumber().length();
     String lastFourDigits = request.cardNumber().substring(cardNumberLength - 4);
-
 
     CardEntity card = new CardEntity(encryptedNumber, lastFourDigits, user);
 
@@ -68,7 +67,7 @@ public class CardServiceImpl implements CardService {
 
   @Transactional
   @Override
-  public void activate(UUID cardId, UUID userId) {
+  public void activate(UUID cardId) {
     CardEntity card = cardRepositoryService.get(cardId);
 
     // только заблокированная карта может быть активирована

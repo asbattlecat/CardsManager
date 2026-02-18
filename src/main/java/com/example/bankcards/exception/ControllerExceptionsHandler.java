@@ -1,10 +1,9 @@
 package com.example.bankcards.exception;
 
+import javax.management.relation.InvalidRelationIdException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.management.relation.InvalidRelationIdException;
 
 @RestControllerAdvice
 public class ControllerExceptionsHandler {
