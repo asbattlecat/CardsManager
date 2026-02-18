@@ -4,10 +4,9 @@ import com.example.bankcards.entity.UserEntity;
 import java.util.UUID;
 
 public interface UserRepositoryService {
-  UserEntity get(UUID userId);
-  UserEntity get(String userId);
+  UserEntity getById(UUID userId);
   UserEntity getByEmail(String email);
-  void existsById(UUID userId);
+  void validateExistsById(UUID userId);
   UserEntity save(UserEntity user);
   void validateNotExistsByEmail(String email);
 }

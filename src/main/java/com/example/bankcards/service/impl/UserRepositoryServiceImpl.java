@@ -26,23 +26,10 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
    */
   @Override
   @Transactional(readOnly = true)
-  public UserEntity get(UUID userId) {
+  public UserEntity getById(UUID userId) {
     return userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundException("There is no user with such id!"));
   }
-
-  /**
-   * Получение UserEntity из репозитория, если в БД он есть. Кидает <code>NotFoundException</code>,
-   * если пользователя с таким ID нет
-   * @param userId строка, содержащая ID пользователя
-   * @return объект UserEntity, у которого указанный <code>userId</code>
-   */
-  @Override
-  public UserEntity get(String userId) {
-    return userRepository.findById(userId)
-            .orElseThrow(() -> new NotFoundException("There is no user with such id!"));
-  }
-
 
   /**
    * Получение UserEntity из репозитория по email, если в БД он есть. Кидает <code>NotFoundException</code>,
@@ -62,7 +49,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
    */
   @Override
   @Transactional(readOnly = true)
-  public void existsById(UUID userId) {
+  public void validateExistsById(UUID userId) {
     if (!userRepository.existsById(userId)) {
       throw new NotFoundException("There is no user with such id!");
     }

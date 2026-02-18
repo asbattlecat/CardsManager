@@ -10,5 +10,5 @@ public interface JwtProvider {
   boolean validateAccessToken(String accessToken);
   boolean validateRefreshToken(String refreshToken);
   Claims getClaims(String token);
-  UUID claimsToUUID(Claims claims);
+  String claimsToEmail(Claims claims);
 }

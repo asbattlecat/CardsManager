@@ -64,7 +64,7 @@ public class TransactionServiceImpl implements TransactionService {
       throw new IllegalArgumentException("Amount must be positive!");
     }
 
-    userRepositoryService.existsById(userId);
+    userRepositoryService.validateExistsById(userId);
 
     // нельзя переводить деньги на ту же карту, с которой списываешь
     if (from.equals(to)) {

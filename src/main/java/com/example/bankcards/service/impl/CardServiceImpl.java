@@ -37,7 +37,7 @@ public class CardServiceImpl implements CardService {
   @Transactional
   @Override
   public CardResponse create(CreateCardRequest request, UUID userId) {
-    UserEntity user = userRepositoryService.get(userId);
+    UserEntity user = userRepositoryService.getById(userId);
 
     String encryptedNumber = encryptionService.encrypt(request.cardNumber());
     cardRepositoryService.validateNotExistsByEncryptedNumber(encryptedNumber);
@@ -94,7 +94,7 @@ public class CardServiceImpl implements CardService {
   @Transactional(readOnly = true)
   @Override
   public List<UUID> getUserCardsIds(UUID userId) {
-    userRepositoryService.existsById(userId);
+    userRepositoryService.validateExistsById(userId);
     return cardRepositoryService.findIdsByOwnerId(userId);
   }
 
@@ -110,7 +110,7 @@ public class CardServiceImpl implements CardService {
   @Override
   public void blockRequest(UUID cardId, UUID userId) {
     cardRepositoryService.existsById(cardId);
-    userRepositoryService.existsById(userId);
+    userRepositoryService.validateExistsById(userId);
 
     CardBlockRequestEntity request = new CardBlockRequestEntity(cardId, userId);
     blockRequestRepository.save(request);

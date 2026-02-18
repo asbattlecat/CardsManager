@@ -30,7 +30,7 @@ public class JwtProviderImpl implements JwtProvider {
     Date expireAt = Date.from(now.plus(30, ChronoUnit.MINUTES));
 
     return Jwts.builder()
-        .subject(user.getId().toString())
+        .subject(user.getEmail())
         .claim("roles", user.getRole().getAuthority())
         .claim("type", "access")
         .issuedAt(issuedAt)
@@ -45,7 +45,7 @@ public class JwtProviderImpl implements JwtProvider {
     Date expireAt = Date.from(now.plus(1, ChronoUnit.DAYS));
 
     return Jwts.builder()
-        .subject(user.getId().toString())
+        .subject(user.getEmail())
         .claim("type", "refresh")
         .issuedAt(issuedAt)
         .expiration(expireAt)
@@ -82,8 +82,8 @@ public class JwtProviderImpl implements JwtProvider {
     return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
   }
 
-  public UUID claimsToUUID(Claims claims) {
-    return UUID.fromString(claims.getSubject());
+  public String claimsToEmail(Claims claims) {
+    return claims.getSubject();
   }
 
   /**

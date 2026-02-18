@@ -3,21 +3,21 @@ package com.example.bankcards.security;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.security.impl.JwtAuthEntryPoint;
 import com.example.bankcards.security.interfaces.JwtProvider;
+import com.example.bankcards.service.interfaces.UserRepositoryService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * Валидация JWT токена и установка пользователя в SecurityContextHolder
@@ -27,12 +27,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   private final JwtProvider jwtProvider;
   private final JwtAuthEntryPoint authenticationEntryPoint;
   private final UserDetailsService userDetailsService;
+  private final UserRepositoryService userRepositoryService;
 
   public JwtAuthFilter(JwtProvider jwtProvider, JwtAuthEntryPoint authenticationEntryPoint,
-                       UserDetailsService userDetailsService) {
+                       UserDetailsService userDetailsService, UserRepositoryService userRepositoryService) {
     this.jwtProvider = jwtProvider;
     this.authenticationEntryPoint = authenticationEntryPoint;
     this.userDetailsService = userDetailsService;
+    this.userRepositoryService = userRepositoryService;
   }
 
   @Override
@@ -49,13 +51,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     try {
       if (!jwtProvider.validateAccessToken(accessToken)) {
-        throw new RuntimeException("Invalid access token");
+        throw new RuntimeException();
       }
 
       Claims claims = jwtProvider.getClaims(accessToken);
-      UUID userId = jwtProvider.claimsToUUID(claims);
+      String email = jwtProvider.claimsToEmail(claims);
 
-      UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(userId.toString());
+      UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(email);
 
       UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -65,7 +67,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
       filterChain.doFilter(request, response);
     } catch (RuntimeException e) {
-      authenticationEntryPoint.commence(request, response, (AuthenticationException) e);
+      authenticationEntryPoint.commence(request, response, new BadCredentialsException("Invalid access token"));
     }
   }
 }
