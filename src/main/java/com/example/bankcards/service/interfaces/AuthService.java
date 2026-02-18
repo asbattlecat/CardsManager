@@ -5,6 +5,7 @@ import com.example.bankcards.dto.JwtResponse;
 import com.example.bankcards.dto.SignupRequest;
 
 public interface AuthService {
-  void signup(SignupRequest request);
   JwtResponse login(JwtRequest request);
+  void signup(SignupRequest request);
+  JwtResponse refresh(String refreshToken);
 }

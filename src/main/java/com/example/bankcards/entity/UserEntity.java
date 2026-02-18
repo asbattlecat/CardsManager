@@ -1,5 +1,6 @@
 package com.example.bankcards.entity;
 
+import com.example.bankcards.entity.enums.Role;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;

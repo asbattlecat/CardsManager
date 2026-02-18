@@ -1,3 +1,5 @@
 package com.example.bankcards.dto;
 
-public record CreateCardRequest(String cardNumber) {}
+import java.util.UUID;
+
+public record CreateCardRequest(String cardNumber, UUID userId) {}

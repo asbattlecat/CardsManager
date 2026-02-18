@@ -1,12 +1,16 @@
 package com.example.bankcards.service.impl;
 
 import com.example.bankcards.entity.CardEntity;
+import com.example.bankcards.entity.enums.CardStatus;
 import com.example.bankcards.exception.AlreadyExistsException;
 import com.example.bankcards.exception.NotFoundException;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.service.interfaces.CardRepositoryService;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +22,7 @@ public class CardRepositoryServiceImpl implements CardRepositoryService {
   }
 
   @Override
-  public CardEntity get(UUID cardId) {
+  public CardEntity getById(UUID cardId) {
     return cardRepository.findById(cardId).orElseThrow(
         () -> new NotFoundException("There is no card with such id!"));
   }
@@ -62,4 +66,16 @@ public class CardRepositoryServiceImpl implements CardRepositoryService {
   public List<UUID> findIdsByOwnerId(UUID ownerId) {
     return cardRepository.findIdsByOwnerId(ownerId);
   }
+
+  @Override
+  public Page<CardEntity> pageableSearchById(UUID ownerId, Pageable pageable) {
+    return cardRepository.findByOwnerId(ownerId, pageable);
+  }
+
+  @Override
+  public Page<CardEntity> pageableSearchByIdAndStatus(UUID ownerId, CardStatus status, Pageable pageable) {
+    return cardRepository.findByOwnerIdAndStatus(ownerId, status, pageable);
+  }
+
+
 }

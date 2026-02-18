@@ -1,5 +1,6 @@
 package com.example.bankcards.entity;
 
+import com.example.bankcards.entity.enums.BlockRequestStatus;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.Data;
@@ -12,19 +13,23 @@ import lombok.NoArgsConstructor;
 public class CardBlockRequestEntity {
   @Id private UUID id;
 
-  @Column(nullable = false, unique = true) private UUID cardId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false, name = "card_id")
+  private CardEntity card;
 
-  @Column(nullable = false) private UUID userId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(nullable = false, name = "owner_id")
+  private UserEntity owner;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "request_status")
   private BlockRequestStatus requestStatus;
 
-  public CardBlockRequestEntity(UUID cardId, UUID userId) {
+  public CardBlockRequestEntity(CardEntity card, UserEntity owner) {
     id = UUID.randomUUID();
 
-    this.cardId = cardId;
-    this.userId = userId;
+    this.card = card;
+    this.owner = owner;
 
     requestStatus = BlockRequestStatus.PENDING;
   }

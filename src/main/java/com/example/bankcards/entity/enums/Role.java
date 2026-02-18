@@ -1,4 +1,4 @@
-package com.example.bankcards.entity;
+package com.example.bankcards.entity.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

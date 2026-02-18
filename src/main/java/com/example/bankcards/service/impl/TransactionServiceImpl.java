@@ -8,6 +8,8 @@ import com.example.bankcards.service.interfaces.TransactionService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
 import java.math.BigDecimal;
 import java.util.*;
+
+import com.example.bankcards.util.CardCheckerUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,8 @@ public class TransactionServiceImpl implements TransactionService {
     CardEntity toEntity = firstCard.getId().equals(from) ? secondCard : firstCard;
 
     validateFromBalance(fromEntity, transferAmount);
+    CardCheckerUtil.checkCardActive(fromEntity);
+    CardCheckerUtil.checkCardActive(toEntity);
 
     fromEntity.setBalance(fromEntity.getBalance().subtract(transferAmount));
     toEntity.setBalance(toEntity.getBalance().add(transferAmount));
