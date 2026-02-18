@@ -1,8 +1,6 @@
-package com.example.bankcards.service.impl;
+package com.example.bankcards.security;
 
-import com.example.bankcards.entity.Role;
 import com.example.bankcards.entity.UserEntity;
-import com.example.bankcards.service.interfaces.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

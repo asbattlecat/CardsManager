@@ -40,6 +40,9 @@ public class CardEntity {
   @Column(nullable = false)
   private BigDecimal balance; // баланс
 
+  @Version
+  private Long version;
+
   public CardEntity(String encryptedNumber, String lastFourDigits, UserEntity owner) {
     id = UUID.randomUUID();
 

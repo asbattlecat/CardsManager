@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.management.relation.InvalidRelationIdException;
+
 @RestControllerAdvice
 public class ControllerExceptionsHandler {
   @ExceptionHandler(AlreadyExistsException.class)
@@ -23,6 +25,21 @@ public class ControllerExceptionsHandler {
 
   @ExceptionHandler(IllegalStateException.class)
   public ResponseEntity<String> handleIllegalState(IllegalStateException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  @ExceptionHandler(InvalidIdException.class)
+  public ResponseEntity<String> handleInvalidId(InvalidIdException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  @ExceptionHandler(InsufficientFundsException.class)
+  public ResponseEntity<String> handleInsufficientFound(InsufficientFundsException e) {
+    return ResponseEntity.badRequest().body(e.getMessage());
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
     return ResponseEntity.badRequest().body(e.getMessage());
   }
 }

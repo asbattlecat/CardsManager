@@ -3,6 +3,7 @@ package com.example.bankcards.service.interfaces;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.dto.CardResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,10 +14,9 @@ public interface CardService {
   void activate(UUID cardId, UUID userId);
   void delete(UUID cardId);
   List<UUID> getAllCards();
-  List<UUID> getUserCardsId(UUID userId);
-
 
   // операции со стороны пользователя:
+  List<UUID> getUserCardsIds(UUID userId);
   CardResponse getCardInfo(UUID cardId);
   void blockRequest(UUID cardId, UUID userId);
 }

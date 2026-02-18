@@ -3,12 +3,15 @@ package com.example.bankcards.util;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.exception.NotFoundException;
+import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
+@Component
 public class CardCheckerUtil {
   /**
-   * Метод, проверяющий, что <code>card</code> не пустой
+   * Проверяет, что <code>card</code> не пустой (в репозитории есть такая карта)
    * @param card получен из репозитория <code>CardRepository</code>
    */
   public static void checkCardExist(Optional<CardEntity> card) {
@@ -18,13 +21,22 @@ public class CardCheckerUtil {
   }
 
   /**
-   * Проверят, что у объекта <code>card</code> CardStatus не совпадает со статусом объекта <code>status</code>
-   * @param card объект, полученный из репозитория <code>CardRepository</code>
-   * @param status сверяемый статус
+   * Проверяет, что карта заблокирована
+   * @param card объект сущности CardEntity
    */
-  public static void checkCardStatus(CardEntity card, CardStatus status) {
-    if (card.getStatus().equals(status)) {
-      throw new IllegalStateException("This status is already set!");
+  public static void checkCardBlocked(CardEntity card) {
+    if (!card.getStatus().equals(CardStatus.BLOCKED)) {
+      throw new IllegalStateException("Only blocked card can be used for this operation!");
+    }
+  }
+
+  /**
+   * Проверяет, что карта активна
+   * @param card объект сущности CardEntity
+   */
+  public static void checkCardActive(CardEntity card) {
+    if (!card.getStatus().equals(CardStatus.ACTIVE)) {
+      throw new IllegalStateException("Only active card can be used for this operation!");
     }
   }
 }

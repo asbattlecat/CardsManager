@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -18,13 +17,14 @@ import java.util.UUID;
 public class UserEntity implements UserDetails {
   @Id
   private UUID id;
+
   @Column(nullable = false, unique = true)
   private String email;
+
   @Column(nullable = false)
   private String password;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "role_name")
   private Role role;
 
   public UserEntity(String email, String password, Role role) {
