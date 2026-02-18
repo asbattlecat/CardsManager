@@ -1,4 +1,4 @@
-package com.example.bankcards.security;
+package com.example.bankcards.security.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

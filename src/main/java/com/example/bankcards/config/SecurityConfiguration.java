@@ -1,7 +1,7 @@
 package com.example.bankcards.config;
 
-import com.example.bankcards.security.JwtAccessDeniedHandler;
-import com.example.bankcards.security.JwtAuthEntryPoint;
+import com.example.bankcards.security.impl.JwtAccessDeniedHandler;
+import com.example.bankcards.security.impl.JwtAuthEntryPoint;
 import com.example.bankcards.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

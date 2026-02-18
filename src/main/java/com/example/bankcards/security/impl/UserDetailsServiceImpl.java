@@ -1,4 +1,4 @@
-package com.example.bankcards.security;
+package com.example.bankcards.security.impl;
 
 import com.example.bankcards.service.interfaces.UserRepositoryService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +15,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    return userRepositoryService.get(email);
+  public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    return userRepositoryService.get(id);
   }
 }

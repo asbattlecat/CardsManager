@@ -7,7 +7,7 @@ import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.CardStatus;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.repository.CardBlockRequestRepository;
-import com.example.bankcards.security.EncryptionService;
+import com.example.bankcards.security.interfaces.EncryptionService;
 import com.example.bankcards.service.interfaces.CardRepositoryService;
 import com.example.bankcards.service.interfaces.CardService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;

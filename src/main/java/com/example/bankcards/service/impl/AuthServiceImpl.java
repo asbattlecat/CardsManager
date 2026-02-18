@@ -5,7 +5,7 @@ import com.example.bankcards.dto.JwtResponse;
 import com.example.bankcards.dto.SignupRequest;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.exception.InvalidCredentialsException;
-import com.example.bankcards.security.JwtProvider;
+import com.example.bankcards.security.interfaces.JwtProvider;
 import com.example.bankcards.service.interfaces.AuthService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public JwtResponse login(JwtRequest request) {
-    UserEntity user = userRepositoryService.get(request.email());
+    UserEntity user = userRepositoryService.getByEmail(request.email());
 
     if (!passwordEncoder.matches(request.password(), user.getPassword())) {
       throw new InvalidCredentialsException("Invalid credentials");

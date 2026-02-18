@@ -1,4 +1,4 @@
-package com.example.bankcards.security;
+package com.example.bankcards.security.interfaces;
 
 import com.example.bankcards.entity.UserEntity;
 import io.jsonwebtoken.Claims;

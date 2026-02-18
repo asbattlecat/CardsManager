@@ -1,9 +1,11 @@
-package com.example.bankcards.security;
+package com.example.bankcards.security.impl;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.example.bankcards.security.interfaces.EncryptionService;
 import org.springframework.stereotype.Service;
 
 @Service

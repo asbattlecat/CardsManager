@@ -5,7 +5,8 @@ import java.util.UUID;
 
 public interface UserRepositoryService {
   UserEntity get(UUID userId);
-  UserEntity get(String email);
+  UserEntity get(String userId);
+  UserEntity getByEmail(String email);
   void existsById(UUID userId);
   UserEntity save(UserEntity user);
   void validateNotExistsByEmail(String email);
