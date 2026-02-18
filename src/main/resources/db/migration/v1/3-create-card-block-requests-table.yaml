@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: ruslan
+      changes:
+        - createTable:
+            tableName: card_block_request
+            remarks: Запросы пользователей на блокировку карт
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: Уникальные идентификаторы запросов
+              - column:
+                  name: card_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_requests_cards
+                    references: card_entity(id)
+                  remarks: ID карт для блокировки
+              - column:
+                  name: owner_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_requests_users
+                    references: user_entity(id)
+                  remarks: ID владельцев карт
+              - column:
+                  name: request_status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  remarks: Статус запросов (PENDING/APPROVED/REJECTED)
+  - changeSet:
+      id: 6
+      author: ruslan
+      changes:
+        - createIndex:
+            tableName: card_block_request
+            indexName: idx_requests_card_id
+            columns:
+              - column:
+                  name: card_id
+        - createIndex:
+            tableName: card_block_request
+            indexName: idx_requests_status
+            columns:
+              - column:
+                  name: request_status

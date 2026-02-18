@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CardBlockRequestRepositoryService {
-  List<CardBlockRequestEntity> getAll();
+  List<CardBlockRequestEntity> getAllInList();
   CardBlockRequestEntity save(CardBlockRequestEntity entity);
-  CardBlockRequestEntity findByCardId(UUID ownerId);
+  CardBlockRequestEntity findById(UUID requestId);
+  void validateNotExistsByCardId(UUID cardId);
 }

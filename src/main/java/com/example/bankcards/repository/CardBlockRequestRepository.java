@@ -3,13 +3,12 @@ package com.example.bankcards.repository;
 import com.example.bankcards.entity.CardBlockRequestEntity;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
-public interface CardBlockRequestRepository extends CrudRepository<CardBlockRequestEntity, UUID> {
+public interface CardBlockRequestRepository extends JpaRepository<CardBlockRequestEntity, UUID> {
 
   @Query(value = """
     SELECT cbre
@@ -17,5 +16,5 @@ public interface CardBlockRequestRepository extends CrudRepository<CardBlockRequ
   """)
   List<CardBlockRequestEntity> getAllInList();
 
-  Optional<CardBlockRequestEntity> findByCardId(UUID cardId);
+  boolean existsByCardId(UUID cardId);
 }

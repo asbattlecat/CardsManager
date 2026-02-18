@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "user_entity")
 public class UserEntity implements UserDetails {
   @Id private UUID id;
 
@@ -43,5 +43,25 @@ public class UserEntity implements UserDetails {
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return false;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return false;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return false;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return false;
   }
 }

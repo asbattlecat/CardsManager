@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7
+      author: ruslan
+      changes:
+        - createIndex:
+            tableName: card_entity
+            indexName: idx_cards_user_status
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: status
+        - createIndex:
+            tableName: card_block_request
+            indexName: idx_requests_card_status
+            columns:
+              - column:
+                  name: card_id
+              - column:
+                  name: request_status

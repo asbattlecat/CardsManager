@@ -1,5 +1,6 @@
 package com.example.bankcards.service.impl;
 
+import com.example.bankcards.dto.BlockRequestResponse;
 import com.example.bankcards.dto.CardResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.entity.CardBlockRequestEntity;
@@ -68,7 +69,7 @@ public class CardServiceImpl implements CardService {
     // только активная карта может быть заблокирована
     CardCheckerUtil.checkCardActive(card);
 
-    card.setStatus(CardStatus.BLOCKED);
+    card.block();
 
     cardRepositoryService.save(card);
   }
@@ -100,34 +101,35 @@ public class CardServiceImpl implements CardService {
   }
 
   @Override
-  public List<UUID> getBlockRequests() {
-    return List.of();
+  public List<BlockRequestResponse> getAllBlockRequests() {
+
+    return blockRequestRepositoryService.getAllInList().stream()
+            .map(CardMapper::toDto)
+            .toList();
   }
 
   @Transactional
   @Override
-  public void approveBlock(UUID cardId) {
-    CardEntity card = cardRepositoryService.getById(cardId);
-    CardCheckerUtil.checkCardActive(card);
-    CardBlockRequestEntity request = blockRequestRepositoryService.findByCardId(cardId);
+  public void approveBlock(UUID requestId) {
+    CardBlockRequestEntity request = blockRequestRepositoryService.findById(requestId);
     CardCheckerUtil.checkBlockRequestPending(request);
 
-    card.setStatus(CardStatus.BLOCKED);
-    request.setRequestStatus(BlockRequestStatus.APPROVED);
+    CardEntity card = request.getCard();
+    CardCheckerUtil.checkCardActive(card);
+    request.approve();
 
-    cardRepositoryService.save(card);
     blockRequestRepositoryService.save(request);
   }
 
   @Transactional
   @Override
-  public void rejectBlock(UUID cardId) {
-    CardEntity card = cardRepositoryService.getById(cardId);
-    CardCheckerUtil.checkCardActive(card);
-    CardBlockRequestEntity request = blockRequestRepositoryService.findByCardId(cardId);
+  public void rejectBlock(UUID requestId) {
+    CardBlockRequestEntity request = blockRequestRepositoryService.findById(requestId);
     CardCheckerUtil.checkBlockRequestPending(request);
 
-    request.setRequestStatus(BlockRequestStatus.REJECTED);
+    CardEntity card = request.getCard();
+    CardCheckerUtil.checkCardActive(card);
+    request.reject();
 
     blockRequestRepositoryService.save(request);
   }
@@ -159,14 +161,10 @@ public class CardServiceImpl implements CardService {
     CardEntity card = cardRepositoryService.getById(cardId);
 
     UserEntity userEntity = userRepositoryService.getById(userId);
-    UUID userEntityId = userEntity.getId();
 
-    if (userEntityId == card.getOwner().getId() || userEntity.getAuthorities().contains(Role.ADMIN)) {
-      return CardMapper.toDto(card);
-    } else {
-      throw new InvalidIdException("User is not owner or is not admin!");
-    }
-
+    // операцию может проводить либо владелец карты, либо админ
+    checkOwnerOrAdmin(card, userEntity);
+    return CardMapper.toDto(card);
   }
 
   @Transactional
@@ -181,6 +179,7 @@ public class CardServiceImpl implements CardService {
       throw new InvalidIdException("User is not owner of this card!");
     }
 
+    blockRequestRepositoryService.validateNotExistsByCardId(cardId);
     CardBlockRequestEntity request = new CardBlockRequestEntity(card, owner);
     return blockRequestRepositoryService.save(request);
   }
@@ -188,9 +187,20 @@ public class CardServiceImpl implements CardService {
   @Transactional(readOnly = true)
   @Override
   public BigDecimal getBalance(UUID cardId, UUID userId) {
-    userRepositoryService.validateExistsById(userId);
-
+    UserEntity user = userRepositoryService.getById(userId);
     CardEntity card = cardRepositoryService.getById(cardId);
+
+    // операцию может проводить либо владелец карты, либо админ
+    checkOwnerOrAdmin(card, user);
+
     return card.getBalance();
+  }
+
+
+  private void checkOwnerOrAdmin(CardEntity card, UserEntity user) {
+    if (!(user.getId().equals(card.getOwner().getId()) || user.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")))) {
+      throw new InvalidIdException("User is not owner or is not admin!");
+    }
   }
 }

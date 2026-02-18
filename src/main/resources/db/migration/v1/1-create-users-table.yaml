@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: ruslan
+      changes:
+        - createTable:
+            tableName: user_entity
+            remarks: Пользователи
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: ID пользователей
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+                  remarks: Email пользователей
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  remarks: Захешированный пароль
+              - column:
+                  name: role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  remarks: Роль пользователей (USER/ADMIN)
+  - changeSet:
+      id: 2
+      author: ruslan
+      changes:
+        - createIndex:
+            tableName: user_entity
+            indexName: idx_users_email
+            columns:
+              - column:
+                  name: email
+            unique: true

@@ -1,12 +1,21 @@
 spring:
   liquibase:
-    change-log: classpath:db/migration/db_changelog.yaml
+    enabled: true
+    change-log: classpath:db/migration/db_migration.yaml
+    default-schema: public
+    drop-first: false
 
-#
-# application.yml — главный конфигурационный файл Spring Boot.
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankcards_db
+    username: postgres
+    password: Bhkfylbz
+    driver-class-name: org.postgresql.Driver
 
-#Что нужно сделать:
-#  - Указать настройки подключения к базе данных.
-#  - Указать порт приложения.
-#  - Настроить параметры безопасности и JWT.
-#  - Включить Swagger UI.
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true

@@ -1,5 +1,6 @@
 package com.example.bankcards.controller;
 
+import com.example.bankcards.dto.BlockRequestResponse;
 import com.example.bankcards.dto.CardResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.entity.UserEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/admin/cards")
+@RequestMapping("/api/admin/cards")
 public class AdminCardController {
   private final CardService cardService;
 
@@ -55,7 +56,7 @@ public class AdminCardController {
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping("/all")
+  @GetMapping("/allCards")
   public ResponseEntity<List<UUID>> allCards() {
     return ResponseEntity.ok(cardService.getAllCards());
   }
@@ -65,4 +66,22 @@ public class AdminCardController {
                                                @AuthenticationPrincipal UserEntity user) {
     return ResponseEntity.ok(cardService.getCardInfo(cardId, user.getId()));
   }
+
+  @GetMapping("/all-block-requests")
+  public ResponseEntity<List<BlockRequestResponse>> allBlockRequests() {
+    return ResponseEntity.ok(cardService.getAllBlockRequests());
+  }
+
+  @PatchMapping("/approve-block/{requestId}")
+  public ResponseEntity<?> approveBlock(@PathVariable UUID requestId) {
+    cardService.approveBlock(requestId);
+    return ResponseEntity.ok().build();
+  }
+
+  @PatchMapping("/reject-block/{requestId}")
+  public ResponseEntity<?> rejectBlock(@PathVariable UUID requestId) {
+    cardService.rejectBlock(requestId);
+    return ResponseEntity.ok().build();
+  }
+
 }

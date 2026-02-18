@@ -37,4 +37,12 @@ public class CardBlockRequestEntity {
   public void changeStatus(BlockRequestStatus status) {
     this.requestStatus = status;
   }
+
+  public void approve() {
+    requestStatus = BlockRequestStatus.APPROVED;
+  }
+
+  public void reject() {
+    requestStatus = BlockRequestStatus.REJECTED;
+  }
 }

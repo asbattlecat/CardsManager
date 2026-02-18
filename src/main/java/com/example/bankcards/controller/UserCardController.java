@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/user/cards")
+@RequestMapping("/api/user/cards")
 public class UserCardController {
   private final CardService cardService;
   private final TransactionService transactionService;
@@ -32,12 +32,12 @@ public class UserCardController {
   }
 
   @GetMapping("/all")
-  public ResponseEntity<List<UUID>> allCards(@AuthenticationPrincipal UserEntity user) {
+  public ResponseEntity<List<UUID>> allUsersCards(@AuthenticationPrincipal UserEntity user) {
     return ResponseEntity.ok(cardService.getUserCardsIds(user.getId()));
   }
 
   @GetMapping
-  public ResponseEntity<Page<CardResponse>> getUserCard(
+  public ResponseEntity<Page<CardResponse>> getUserCardPagination(
           @AuthenticationPrincipal UserEntity user,
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "10") int size,
@@ -55,6 +55,15 @@ public class UserCardController {
     return ResponseEntity.ok(cards);
   }
 
+  @PostMapping("/block-request/{cardId}")
+  public ResponseEntity<?> blockRequest(
+          @AuthenticationPrincipal UserEntity user,
+          @PathVariable UUID cardId
+  ) {
+    cardService.blockRequest(cardId, user.getId());
+    return ResponseEntity.ok().build();
+  }
+
   @GetMapping("/{cardId}")
   public ResponseEntity<BigDecimal> cardBalance(
           @PathVariable UUID cardId,
@@ -68,10 +77,5 @@ public class UserCardController {
           @AuthenticationPrincipal UserEntity user) {
     transactionService.transfer(user.getId(), request.from(), request.to(), request.amount());
     return ResponseEntity.ok().build();
-  }
-
-  @PostMapping("/blockRequest")
-  public ResponseEntity<?> blockRequest() {
-
   }
 }

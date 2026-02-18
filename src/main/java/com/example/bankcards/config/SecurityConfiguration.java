@@ -57,7 +57,20 @@ public class SecurityConfiguration {
                     .accessDeniedHandler(jwtAccessDeniedHandler)
             )
             .authorizeHttpRequests(auth -> auth
+                    // публичные эндпоинты, добро пожаловать :)
+                    .requestMatchers("/api/setup/**").permitAll()
+                    .requestMatchers("/api/user/login").permitAll()
+                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                    .requestMatchers("/actuator/health", "/actuator/info").permitAll()
 
+                    // только админы, ты админ? :/
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                    // для юзеров в общем, ты юзер?
+                    .requestMatchers("/api/user/**").hasRole("USER")
+
+                    // ты не пройдешь, где логин пароль >:(
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();

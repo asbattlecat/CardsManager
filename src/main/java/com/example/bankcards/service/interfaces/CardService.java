@@ -1,5 +1,6 @@
 package com.example.bankcards.service.interfaces;
 
+import com.example.bankcards.dto.BlockRequestResponse;
 import com.example.bankcards.dto.CardResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.entity.CardBlockRequestEntity;
@@ -18,9 +19,9 @@ public interface CardService {
   void activate(UUID cardId);
   void delete(UUID cardId);
   List<UUID> getAllCards();
-  List<UUID> getBlockRequests();
-  void approveBlock(UUID cardId);
-  void rejectBlock(UUID cardId);
+  List<BlockRequestResponse> getAllBlockRequests();
+  void approveBlock(UUID requestId);
+  void rejectBlock(UUID requestId);
 
   // операции со стороны пользователя:
   List<UUID> getUserCardsIds(UUID userId);

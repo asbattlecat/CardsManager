@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.service.interfaces.CardService;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "cards")
+@Table(name = "card_entity")
 public class CardEntity {
   @Id private UUID id; // id карты
 
@@ -27,11 +28,14 @@ public class CardEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity owner; // владелец
 
-  @Column(nullable = false) private LocalDate expirationDate; // дата истечения срока
+  @Column(nullable = false)
+  private LocalDate expirationDate; // дата истечения срока
 
-  @Column(nullable = false) @Enumerated(EnumType.STRING) private CardStatus status; // статус карты
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING) private CardStatus status; // статус карты
 
-  @Column(nullable = false) private BigDecimal balance; // баланс
+  @Column(nullable = false)
+  private BigDecimal balance; // баланс
 
   @Version private Long version;
 
@@ -46,6 +50,10 @@ public class CardEntity {
 
     status = CardStatus.ACTIVE;
     balance = BigDecimal.ZERO;
+  }
+
+  public void block() {
+    status = CardStatus.BLOCKED;
   }
 
   public String getMaskedNumber() {

@@ -12,10 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface CardRepository extends CrudRepository<CardEntity, UUID> {
+public interface CardRepository extends JpaRepository<CardEntity, UUID> {
   boolean existsByEncryptedNumber(String encryptedNumber);
 
   @Query(value = """
