@@ -9,6 +9,7 @@ import com.example.bankcards.security.interfaces.JwtProvider;
 import com.example.bankcards.service.interfaces.AuthService;
 import com.example.bankcards.service.interfaces.UserRepositoryService;
 import io.jsonwebtoken.Claims;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
    * @return новую пару refresh token и access token
    */
   @Override
-  public JwtResponse refresh(String refreshToken) {
+  public JwtResponse refresh(@NotNull String refreshToken) {
     if (!jwtProvider.validateRefreshToken(refreshToken)) {
       throw new InvalidCredentialsException("Invalid refresh token");
     }
@@ -72,6 +73,4 @@ public class AuthServiceImpl implements AuthService {
 
     return new JwtResponse(newAccessToken, newRefreshToken);
   }
-
-
 }

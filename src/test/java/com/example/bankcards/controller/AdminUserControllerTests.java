@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// писались в торопях, прошу прощения за беспорядок :)
 @ExtendWith(MockitoExtension.class)
 public class AdminUserControllerTests {
   private MockMvc mockMvc;

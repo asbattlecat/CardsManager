@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// писались в торопях, прошу прощения за беспорядок :)
 @ExtendWith(MockitoExtension.class)
 public class AdminCardControllerTests {
   private MockMvc mockMvc;
@@ -73,8 +74,8 @@ public class AdminCardControllerTests {
     when(cardService.create(any(CreateCardRequest.class))).thenReturn(cardResponse);
 
     mockMvc.perform(post("/api/admin/cards")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(cardId.toString()))
             .andExpect(jsonPath("$.maskedNumber").value("**** **** **** 1234"))
@@ -89,8 +90,8 @@ public class AdminCardControllerTests {
     );
 
     mockMvc.perform(post("/api/admin/cards")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invalidRequest)))
             .andExpect(status().isBadRequest());
   }
 

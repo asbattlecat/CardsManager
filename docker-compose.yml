@@ -1,9 +1,94 @@
-# 
-# docker-compose.yml — определяет сервисы для разработки и тестирования.
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: bankcards-postgres
+    environment:
+      POSTGRES_DB: bankcards_db
+      POSTGRES_USER_FILE: /run/secrets/db_username
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      bankcards-network:
+        aliases:
+          - postgres
+    secrets:
+      - db_username
+      - db_password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$(cat /run/secrets/db_username) -d bankcards_db" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
 
-Что нужно сделать:
-  - Настроить сервисы для:
-      - PostgreSQL (или MySQL) с начальной базой.
-      - Приложения Spring Boot (если нужно).
-  - Открыть нужные порты (например, 5432, 8080).
-  - Настроить volume для хранения данных БД.
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bankcards-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ENCRYPTION_SECRET_FILE: /run/secrets/encryption_secret
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bankcards_db
+      SPRING_DATASOURCE_USERNAME_FILE: /run/secrets/db_username
+      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/db_password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_SHOW_SQL: true
+
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:/db/migration/db_migration.yaml
+
+      JWT_EXPIRATION: 86400000
+
+      SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: 60000
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 5
+
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - bankcards-network
+    secrets:
+      - jwt_secret
+      - encryption_secret
+      - db_username
+      - db_password
+    restart: unless-stopped
+    command: >
+      sh -c "
+        echo 'Waiting for PostgreSQL...' &&
+        until nc -z postgres 5432; do
+          echo 'PostgreSQL not ready yet...'
+          sleep 2
+        done &&
+        echo 'PostgreSQL is ready!' &&
+        java -jar app.jar
+      "
+
+networks:
+  bankcards-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+secrets:
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+  encryption_secret:
+    file: ./secrets/encryption_secret.txt
+  db_username:
+    file: ./secrets/db_username.txt
+  db_password:
+    file: ./secrets/db_password.txt

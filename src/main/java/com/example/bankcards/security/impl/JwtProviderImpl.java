@@ -1,27 +1,49 @@
 package com.example.bankcards.security.impl;
 
 import com.example.bankcards.entity.UserEntity;
+import com.example.bankcards.exception.NotFoundException;
 import com.example.bankcards.security.interfaces.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtProviderImpl implements JwtProvider {
   // А ЭТО НЕ БЕЗОПАСНО, Я ЗНАЮ! но это пет проект :))
-  private final String SECRET;
   private final SecretKey key;
 
-  public JwtProviderImpl() {
-    SECRET = "abc_abc_abc_abc_abc_abc_abc_abc_";
-    key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+  public JwtProviderImpl(@Value("${JWT_SECRET_FILE:}") String secretFilePath) throws IOException {
+    String secret;
+
+    if (secretFilePath != null && !secretFilePath.isEmpty() && Files.exists(Paths.get(secretFilePath))) {
+      // Читаем секрет из Docker secret
+      secret = Files.readString(Path.of(secretFilePath)).trim();
+    } else {
+      // Fallback для разработки (не использовать в production!)
+      secret = System.getenv().getOrDefault("JWT_SECRET",
+              "abc_abc_abc_abc_abc_abc_abc_abc_"); // только для разработки bes docker secret!!!
+    }
+
+    // Убедимся, что ключ достаточно длинный (не менее 32 байт для HS256)
+    if (secret.length() < 32) {
+      throw new IllegalArgumentException("JWT secret must be at least 32 characters long");
+    }
+
+    this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
   }
 
   public String generateAccessToken(UserEntity user) {

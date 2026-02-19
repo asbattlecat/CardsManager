@@ -1,6 +1,8 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.service.interfaces.UserRepositoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/users")
+@Tag(name = "Управление пользователями (админ)", description = "API для административного управления пользователями")
 public class AdminUserController {
   private final UserRepositoryService userRepositoryService;
 
@@ -21,6 +24,10 @@ public class AdminUserController {
     this.userRepositoryService = userRepositoryService;
   }
 
+  @Operation(
+          summary = "Удаление пользователей",
+          description = "Удаляет указанного пользователя по ID (UUID). Требуются права администратора."
+  )
   @Transactional
   @DeleteMapping("/{userId}")
   public ResponseEntity<?> deleteUser(@Valid @NotNull @PathVariable UUID userId) {

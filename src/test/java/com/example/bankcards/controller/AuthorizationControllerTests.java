@@ -4,6 +4,7 @@ package com.example.bankcards.controller;
 import com.example.bankcards.dto.JwtRequest;
 import com.example.bankcards.dto.JwtResponse;
 import com.example.bankcards.dto.SignupRequest;
+import com.example.bankcards.dto.TokenRefreshRequest;
 import com.example.bankcards.entity.enums.Role;
 import com.example.bankcards.exception.AlreadyExistsException;
 import com.example.bankcards.exception.ControllerExceptionsHandler;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+// Тесты писались в торопях, прошу прощения за беспорядок :)
 @ExtendWith(MockitoExtension.class)
 public class AuthorizationControllerTests {
   private MockMvc mockMvc;
@@ -45,6 +48,8 @@ public class AuthorizationControllerTests {
   private SignupRequest validSignupRequest;
   private JwtResponse jwtResponse;
 
+  private UUID userId;
+
   @BeforeEach
   void setUp() {
     mockMvc = MockMvcBuilders.standaloneSetup(authorizationController)
@@ -53,8 +58,8 @@ public class AuthorizationControllerTests {
 
     objectMapper = new ObjectMapper();
 
-    validLoginRequest = new JwtRequest("user@example.com", "password123");
-    validSignupRequest = new SignupRequest("newuser@example.com", "password123", Role.USER);
+    validLoginRequest = new JwtRequest("email", "password");
+    validSignupRequest = new SignupRequest("email", "password", Role.USER);
     jwtResponse = new JwtResponse("access-token", "refresh-token");
   }
 
@@ -63,8 +68,8 @@ public class AuthorizationControllerTests {
     when(authService.login(any(JwtRequest.class))).thenReturn(jwtResponse);
 
     mockMvc.perform(post("/api/user/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validLoginRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(validLoginRequest)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.accessToken").value("access-token"))
             .andExpect(jsonPath("$.refreshToken").value("refresh-token"));
@@ -78,8 +83,8 @@ public class AuthorizationControllerTests {
             .thenThrow(new InvalidCredentialsException("Invalid credentials"));
 
     mockMvc.perform(post("/api/user/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validLoginRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(validLoginRequest)))
             .andExpect(status().isUnauthorized())
             .andExpect(content().string("Invalid credentials"));
   }
@@ -90,8 +95,8 @@ public class AuthorizationControllerTests {
             .thenThrow(new InvalidCredentialsException("Invalid credentials"));
 
     mockMvc.perform(post("/api/user/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validLoginRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(validLoginRequest)))
             .andExpect(status().isUnauthorized());
   }
 
@@ -99,8 +104,8 @@ public class AuthorizationControllerTests {
   @MethodSource("provideInvalidLoginRequests")
   void login_InvalidInput_BadRequest(JwtRequest invalidRequest) throws Exception {
     mockMvc.perform(post("/api/user/login")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invalidRequest)))
             .andExpect(status().isBadRequest());
 
     verify(authService, never()).login(any());
@@ -120,8 +125,8 @@ public class AuthorizationControllerTests {
     doNothing().when(authService).signup(any(SignupRequest.class));
 
     mockMvc.perform(post("/api/admin/users/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validSignupRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(validSignupRequest)))
             .andExpect(status().isCreated());
 
     verify(authService, times(1)).signup(any(SignupRequest.class));
@@ -133,8 +138,8 @@ public class AuthorizationControllerTests {
             .when(authService).signup(any(SignupRequest.class));
 
     mockMvc.perform(post("/api/admin/users/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(validSignupRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(validSignupRequest)))
             .andExpect(status().isConflict())
             .andExpect(content().string("User with such email already exists!"));
   }
@@ -143,8 +148,8 @@ public class AuthorizationControllerTests {
   @MethodSource("provideInvalidSignupRequests")
   void register_WithInvalidInput_ReturnsBadRequest(SignupRequest invalidRequest) throws Exception {
     mockMvc.perform(post("/api/admin/users/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(invalidRequest)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invalidRequest)))
             .andExpect(status().isBadRequest());
 
     verify(authService, never()).signup(any());
@@ -159,4 +164,26 @@ public class AuthorizationControllerTests {
             Arguments.of(new SignupRequest("email@test.com", "password", null))
     );
   }
+
+  @Test
+  void refreshTokens_Success_Return200() throws Exception {
+    TokenRefreshRequest request = new TokenRefreshRequest("refresh_token");
+    when(authService.refresh(any(String.class))).thenReturn(jwtResponse);
+
+    mockMvc.perform(post("/api/user/refresh-tokens")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  void refreshToken_Fail_BadRequest() throws Exception {
+    TokenRefreshRequest request = new TokenRefreshRequest(null);
+
+    mockMvc.perform(post("/api/user/refresh-tokens")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+  }
+
 }
