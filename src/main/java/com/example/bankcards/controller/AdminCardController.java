@@ -5,6 +5,7 @@ import com.example.bankcards.dto.CardResponse;
 import com.example.bankcards.dto.CreateCardRequest;
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.service.interfaces.CardService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,7 +30,7 @@ public class AdminCardController {
    * @return информацию о созданной карте
    */
   @PostMapping()
-  public ResponseEntity<CardResponse> create(@RequestBody CreateCardRequest request) {
+  public ResponseEntity<CardResponse> create(@Valid @RequestBody CreateCardRequest request) {
     return ResponseEntity.ok(cardService.create(request));
   }
 

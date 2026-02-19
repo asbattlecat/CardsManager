@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class CardServiceImpl implements CardService {
     // только заблокированная карта может быть активирована
     CardCheckerUtil.checkCardBlocked(card);
 
-    card.setStatus(CardStatus.ACTIVE);
+    card.activate();
 
     cardRepositoryService.save(card);
   }

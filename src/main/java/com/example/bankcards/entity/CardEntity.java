@@ -56,6 +56,10 @@ public class CardEntity {
     status = CardStatus.BLOCKED;
   }
 
+  public void activate() {
+    status = CardStatus.ACTIVE;
+  }
+
   public String getMaskedNumber() {
     return "**** **** **** " + lastFourDigits;
   }

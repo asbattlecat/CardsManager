@@ -9,4 +9,5 @@ public interface UserRepositoryService {
   void validateExistsById(UUID userId);
   UserEntity save(UserEntity user);
   void validateNotExistsByEmail(String email);
+  void delete(UUID userId);
 }

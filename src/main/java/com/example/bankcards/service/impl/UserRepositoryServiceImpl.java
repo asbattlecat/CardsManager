@@ -71,4 +71,11 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
       throw new AlreadyExistsException("User with such email already exists!");
     }
   }
+
+  @Transactional
+  @Override
+  public void delete(UUID userId) {
+    validateExistsById(userId);
+    userRepository.deleteById(userId);
+  }
 }
