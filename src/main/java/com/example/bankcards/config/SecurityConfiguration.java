@@ -60,7 +60,11 @@ public class SecurityConfiguration {
                     // публичные эндпоинты, добро пожаловать :)
                     .requestMatchers("/api/setup/**").permitAll()
                     .requestMatchers("/api/user/login").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                    .requestMatchers(
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v3/**"
+                    ).permitAll()
                     .requestMatchers("/actuator/health", "/actuator/info").permitAll()
 
                     // только админы, ты админ? :/

@@ -25,3 +25,13 @@
 <code>docker compose logs -f app</code>
 
 <code>docker compose logs -f postgres</code>
+
+## Документация
+
+После запуска контейнеров:
+
+* JSON формат: http://localhost:8080/v3/api-docs
+
+* YAML формат: http://localhost:8080/v3/api-docs.yaml
+
+* Swagger UI: http://localhost:8080/swagger-ui.html
